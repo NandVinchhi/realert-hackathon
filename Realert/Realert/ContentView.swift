@@ -725,13 +725,13 @@ struct ContentView: View {
                                 Annotation(
                                         "Exit",
                                         coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54479
-                                        , longitude: -77.44851)
+                                            latitude: 37.54458
+                                        , longitude: -77.44873)
                                         , anchor: .top
                                     ) {
                                         Image(systemName: "door.left.hand.open")
                                             .foregroundStyle(
-                                                currentAlertRoomCode == "EGR1313" || currentAlertRoomCode == "EGR2308" ? Color.red : Color.green
+                                                currentAlertRoomCode == "EGR1313" || currentAlertRoomCode == "EGR2308" ? Color.red : Color.clear
                                             )
                                             .background (Color.clear)
                                     }
