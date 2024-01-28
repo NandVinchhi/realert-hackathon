@@ -1,12 +1,34 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
-import json
+from datetime import datetime
+import twilio
+from credentials import account_sid, auth_token, from_number
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+from twilio.rest import Client
+
+def send_messages(phone_numbers, message):
+    # Initialize Twilio client
+    client = Client(account_sid, auth_token)
+
+    # Ensure unique phone numbers
+    unique_numbers = set(phone_numbers)
+
+    # Send the message to each unique phone number
+    for number in unique_numbers:
+        try:
+            message = client.messages.create(
+                body=message,
+                from_=from_number,
+                to=number
+            )
+            
+        except Exception as e:
+            print(f"Failed to send message to {number}: {e}")
 
 # Models
 class School(db.Model):
@@ -120,8 +142,19 @@ def report_event():
         return jsonify({'message': 'Event not stored, another event occurred recently'}), 400
     new_event = Event(room_code=data['room_code'], event_type=data['event_type'],
                                  timestamp=datetime.now(), school_id=data['school_id'])
+    
+    all_students = Student.query.filter_by(school_id=data['school_id']).all()
+
+    final_numbers = []
+
+    for i in all_students:
+        final_numbers.append("+1" + i.phone_number)
+        final_numbers.append("+1" + i.emergency_phone)
     db.session.add(new_event)
     db.session.commit()
+
+    m_text = f"EMERGENCY ALERT! A gunshot was detected in room {data['room_code']} through {data['event_type']} detection systems."
+    send_messages(final_numbers, m_text)
     return jsonify({'message': 'Event reported successfully'}), 201
 
 @app.route('/get_latest_event', methods=['POST'])
