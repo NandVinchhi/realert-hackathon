@@ -77,6 +77,11 @@ struct ContentView: View {
     
     @State var currentAlert: Alert? = nil
     
+    var currentAlertRoomCode: String {
+        currentAlert?.roomCode ?? ""
+    }
+    
+    @State var annotations = [MKPointAnnotation]()
     
     //Map Stuff
     @State var region = MKCoordinateRegion(
@@ -703,7 +708,7 @@ struct ContentView: View {
                 Map(position: $cameraPosition)
                             {
                                 MapPolygon(coordinates: room1)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EGR1313" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "EGR1313" ? Color.red : Color.green)
                                     
                                 Annotation(
                                         "EGR 1313",
@@ -718,7 +723,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: room2)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EGR2308" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "EGR2308" ? Color.red : Color.green)
                                 Annotation(
                                         "EGR 2308",
                                         coordinate: CLLocationCoordinate2D(
@@ -732,7 +737,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: room3)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EAST1232" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "EAST1232" ? Color.red : Color.green)
                                 Annotation(
                                         "EAST 1232",
                                         coordinate: CLLocationCoordinate2D(
@@ -746,7 +751,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: hallway1)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0001" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "H0001" ? Color.red : Color.green)
                                 Annotation(
                                         "Main Hall",
                                         coordinate: CLLocationCoordinate2D(
@@ -760,10 +765,10 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: hallway2)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0002" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "H0002" ? Color.red : Color.green)
                   
                                 MapPolygon(coordinates: hallway3)
-                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0003" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlertRoomCode == "H0003" ? Color.red : Color.green)
                                 
                             }
                 VStack {
