@@ -40,10 +40,17 @@ struct WeekSchedule {
     var sunday: [ClassSchedule]
 }
 
-struct Alert {
+struct Alert: Equatable {
     var roomCode: String
     var alertType: String
     var timeStamp: String
+    
+    static func == (lhs: Alert, rhs: Alert) -> Bool {
+            return
+                lhs.roomCode == rhs.roomCode &&
+                lhs.alertType == rhs.alertType &&
+                lhs.timeStamp == rhs.timeStamp
+        }
 }
 
 struct ContentView: View {
@@ -172,7 +179,7 @@ struct ContentView: View {
         return finalRoomCode
     }
     
-    let baseUrl: String = "http://127.0.0.1:8000"
+    let baseUrl: String = "https://new-ravens-speak.loca.lt"
     
     private func convertDictToSchool(data: [String: Any]) -> School {
         return School(id: data["id"] as? Int ?? 0, name: data["name"] as? String ?? "")
@@ -692,11 +699,12 @@ struct ContentView: View {
         case .mainPage:
             
             ZStack {
-                if let alert = currentAlert {
-                    Map(position: $cameraPosition)
+                
+                Map(position: $cameraPosition)
                             {
                                 MapPolygon(coordinates: room1)
-                                    .foregroundStyle(alert.roomCode == "1313" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EGR1313" ? Color.red : Color.green)
+                                    
                                 Annotation(
                                         "EGR 1313",
                                         coordinate: CLLocationCoordinate2D(
@@ -710,7 +718,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: room2)
-                                    .foregroundStyle(alert.roomCode == "2308" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EGR2308" ? Color.red : Color.green)
                                 Annotation(
                                         "EGR 2308",
                                         coordinate: CLLocationCoordinate2D(
@@ -724,7 +732,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: room3)
-                                    .foregroundStyle(alert.roomCode == "1232" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "EAST1232" ? Color.red : Color.green)
                                 Annotation(
                                         "EAST 1232",
                                         coordinate: CLLocationCoordinate2D(
@@ -738,7 +746,7 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: hallway1)
-                                    .foregroundStyle(alert.roomCode == "0001" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0001" ? Color.red : Color.green)
                                 Annotation(
                                         "Main Hall",
                                         coordinate: CLLocationCoordinate2D(
@@ -752,79 +760,15 @@ struct ContentView: View {
                                     }
                                 
                                 MapPolygon(coordinates: hallway2)
-                                    .foregroundStyle(alert.roomCode == "0002" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0002" ? Color.red : Color.green)
                   
                                 MapPolygon(coordinates: hallway3)
-                                    .foregroundStyle(alert.roomCode == "0003" ? Color.red : Color.green)
+                                    .foregroundStyle(currentAlert?.roomCode ?? "" == "H0003" ? Color.red : Color.green)
                                 
+                            }.onChange(of: currentAlert) { newValue in
+                                print("HELLO WORLD \(newValue)")
                             }
-                } else {
-                    Map(position: $cameraPosition)
-                            {
-                                MapPolygon(coordinates: room1)
-                                    .foregroundStyle(.green)
-                                Annotation(
-                                        "EGR 1313",
-                                        coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54465
-                                        , longitude: -77.448495)
-                                        , anchor: .top
-                                    ) {
-                                        Image(systemName: "rays")
-                                            .foregroundStyle(.clear)
-                                            .background (Color.clear)
-                                    }
-                                
-                                MapPolygon(coordinates: room2)
-                                    .foregroundStyle(.green)
-                                Annotation(
-                                        "EGR 2308",
-                                        coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54475
-                                        , longitude: -77.44867125),
-                                        anchor: .bottom
-                                    ) {
-                                        Image(systemName: "rays")
-                                            .foregroundStyle(.clear)
-                                            .background (Color.clear)
-                                    }
-                                
-                                MapPolygon(coordinates: room3)
-                                    .foregroundStyle(.green)
-                                Annotation(
-                                        "EAST 1232",
-                                        coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54504
-                                        , longitude: -77.448495),
-                                        anchor: .bottom
-                                    ) {
-                                        Image(systemName: "rays")
-                                            .foregroundStyle(.clear)
-                                            .background (Color.clear)
-                                    }
-                                
-                                MapPolygon(coordinates: hallway1)
-                                    .foregroundStyle(.green)
-                                Annotation(
-                                        "Main Hall",
-                                        coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54487
-                                        , longitude: -77.448598),
-                                        anchor: .bottom
-                                    ) {
-                                        Image(systemName: "rays")
-                                            .foregroundStyle(.clear)
-                                            .background (Color.clear)
-                                    }
-                                
-                                MapPolygon(coordinates: hallway2)
-                                    .foregroundStyle(.green)
-                  
-                                MapPolygon(coordinates: hallway3)
-                                    .foregroundStyle(.green)
-                                
-                            }
-                }
+
                 
                 
                 VStack {
@@ -877,7 +821,10 @@ struct ContentView: View {
                     if (isTracking) {
                     
                         result.numThreats = 0
-                        currentAlert = .init(roomCode: currentRoom, alertType: "audio", timeStamp: getCurrentTimeString())
+                        Task {
+                            currentAlert = .init(roomCode: currentRoom, alertType: "audio", timeStamp: getCurrentTimeString())
+                        }
+                        
                         addAlertRequest() { message, error in
                             print("success")
                         }
@@ -885,7 +832,10 @@ struct ContentView: View {
                     
                 } else {
                     getAlertRequest() { message, error in
-                        currentAlert = message
+                        Task {
+                            currentAlert = message
+                        }
+                        
                     }
                 }
             }
