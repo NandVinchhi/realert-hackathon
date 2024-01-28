@@ -722,6 +722,22 @@ struct ContentView: View {
                                             .background (Color.clear)
                                     }
                                 
+                                Annotation(
+                                        "Exit",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54479
+                                        , longitude: -77.44851)
+                                        , anchor: .top
+                                    ) {
+                                        Image(systemName: "door.left.hand.open")
+                                            .foregroundStyle(
+                                                currentAlertRoomCode == "EGR1313" || currentAlertRoomCode == "EGR2308" ? Color.red : Color.green
+                                            )
+                                            .background (Color.clear)
+                                    }
+                                
+                                
+                                
                                 MapPolygon(coordinates: room2)
                                     .foregroundStyle(currentAlertRoomCode == "EGR2308" ? Color.red : Color.green)
                                 Annotation(
@@ -752,17 +768,6 @@ struct ContentView: View {
                                 
                                 MapPolygon(coordinates: hallway1)
                                     .foregroundStyle(currentAlertRoomCode == "H0001" ? Color.red : Color.green)
-                                Annotation(
-                                        "Main Hall",
-                                        coordinate: CLLocationCoordinate2D(
-                                            latitude: 37.54487
-                                        , longitude: -77.448598),
-                                        anchor: .bottom
-                                    ) {
-                                        Image(systemName: "rays")
-                                            .foregroundStyle(.clear)
-                                            .background (Color.clear)
-                                    }
                                 
                                 MapPolygon(coordinates: hallway2)
                                     .foregroundStyle(currentAlertRoomCode == "H0002" ? Color.red : Color.green)
