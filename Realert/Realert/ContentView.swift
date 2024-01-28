@@ -66,11 +66,10 @@ struct ContentView: View {
     
     @State var weekSchedule: WeekSchedule = .init(monday: [], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: [])
     
-    @State var emergencyStatus = false
-    
     @State var isTracking = false
     
     @State var currentAlert: Alert? = nil
+    
     
     //Map Stuff
     @State var region = MKCoordinateRegion(
@@ -693,72 +692,140 @@ struct ContentView: View {
         case .mainPage:
             
             ZStack {
-                //Map Stuff
-                Map(position: $cameraPosition)
-                        {
-                            MapPolygon(coordinates: room1)
-                                .foregroundStyle(.green)
-                            Annotation(
-                                    "EGR 1313",
-                                    coordinate: CLLocationCoordinate2D(
-                                        latitude: 37.54465
-                                    , longitude: -77.448495)
-                                    , anchor: .top
-                                ) {
-                                    Image(systemName: "rays")
-                                        .foregroundStyle(.clear)
-                                        .background (Color.clear)
-                                }
-                            
-                            MapPolygon(coordinates: room2)
-                                .foregroundStyle(.green)
-                            Annotation(
-                                    "EGR 2308",
-                                    coordinate: CLLocationCoordinate2D(
-                                        latitude: 37.54475
-                                    , longitude: -77.44867125),
-                                    anchor: .bottom
-                                ) {
-                                    Image(systemName: "rays")
-                                        .foregroundStyle(.clear)
-                                        .background (Color.clear)
-                                }
-                            
-                            MapPolygon(coordinates: room3)
-                                .foregroundStyle(.green)
-                            Annotation(
-                                    "EAST 1232",
-                                    coordinate: CLLocationCoordinate2D(
-                                        latitude: 37.54504
-                                    , longitude: -77.448495),
-                                    anchor: .bottom
-                                ) {
-                                    Image(systemName: "rays")
-                                        .foregroundStyle(.clear)
-                                        .background (Color.clear)
-                                }
-                            
-                            MapPolygon(coordinates: hallway1)
-                                .foregroundStyle(.green)
-                            Annotation(
-                                    "Main Hall",
-                                    coordinate: CLLocationCoordinate2D(
-                                        latitude: 37.54487
-                                    , longitude: -77.448598),
-                                    anchor: .bottom
-                                ) {
-                                    Image(systemName: "rays")
-                                        .foregroundStyle(.clear)
-                                        .background (Color.clear)
-                                }
-                            
-                            MapPolygon(coordinates: hallway2)
-                                .foregroundStyle(.green)
-              
-                            MapPolygon(coordinates: hallway3)
-                                .foregroundStyle(.green)
-                            
-                        }
+                if let alert = currentAlert {
+                    Map(position: $cameraPosition)
+                            {
+                                MapPolygon(coordinates: room1)
+                                    .foregroundStyle(alert.roomCode == "1313" ? Color.red : Color.green)
+                                Annotation(
+                                        "EGR 1313",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54465
+                                        , longitude: -77.448495)
+                                        , anchor: .top
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: room2)
+                                    .foregroundStyle(alert.roomCode == "2308" ? Color.red : Color.green)
+                                Annotation(
+                                        "EGR 2308",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54475
+                                        , longitude: -77.44867125),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: room3)
+                                    .foregroundStyle(alert.roomCode == "1232" ? Color.red : Color.green)
+                                Annotation(
+                                        "EAST 1232",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54504
+                                        , longitude: -77.448495),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: hallway1)
+                                    .foregroundStyle(alert.roomCode == "0001" ? Color.red : Color.green)
+                                Annotation(
+                                        "Main Hall",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54487
+                                        , longitude: -77.448598),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: hallway2)
+                                    .foregroundStyle(alert.roomCode == "0002" ? Color.red : Color.green)
+                  
+                                MapPolygon(coordinates: hallway3)
+                                    .foregroundStyle(alert.roomCode == "0003" ? Color.red : Color.green)
+                                
+                            }
+                } else {
+                    Map(position: $cameraPosition)
+                            {
+                                MapPolygon(coordinates: room1)
+                                    .foregroundStyle(.green)
+                                Annotation(
+                                        "EGR 1313",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54465
+                                        , longitude: -77.448495)
+                                        , anchor: .top
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: room2)
+                                    .foregroundStyle(.green)
+                                Annotation(
+                                        "EGR 2308",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54475
+                                        , longitude: -77.44867125),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: room3)
+                                    .foregroundStyle(.green)
+                                Annotation(
+                                        "EAST 1232",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54504
+                                        , longitude: -77.448495),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: hallway1)
+                                    .foregroundStyle(.green)
+                                Annotation(
+                                        "Main Hall",
+                                        coordinate: CLLocationCoordinate2D(
+                                            latitude: 37.54487
+                                        , longitude: -77.448598),
+                                        anchor: .bottom
+                                    ) {
+                                        Image(systemName: "rays")
+                                            .foregroundStyle(.clear)
+                                            .background (Color.clear)
+                                    }
+                                
+                                MapPolygon(coordinates: hallway2)
+                                    .foregroundStyle(.green)
+                  
+                                MapPolygon(coordinates: hallway3)
+                                    .foregroundStyle(.green)
+                                
+                            }
+                }
+                
                 
                 VStack {
                     Spacer()
