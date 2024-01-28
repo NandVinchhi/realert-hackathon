@@ -765,12 +765,7 @@ struct ContentView: View {
                                 MapPolygon(coordinates: hallway3)
                                     .foregroundStyle(currentAlert?.roomCode ?? "" == "H0003" ? Color.red : Color.green)
                                 
-                            }.onChange(of: currentAlert) { newValue in
-                                print("HELLO WORLD \(newValue)")
                             }
-
-                
-                
                 VStack {
                     Spacer()
                     
